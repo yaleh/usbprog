@@ -1,17 +1,17 @@
 # Due Usbprog
 
-Use `flashrom` tool and `Arduino Due` to program flash. Based on [serprog-duino](https://gitorious.org/gnutoo-personal-arduino-projects/serprog-duino/source/8856a3ad962b16383ace64d6d977bae34c56af0b:), refer to [Serprog/Arduino flasher](http://www.flashrom.org/Serprog/Arduino_flasher)
+Use `flashrom` tool and `Arduino Pro Mini` to program flash. Based on [serprog-duino](https://gitorious.org/gnutoo-personal-arduino-projects/serprog-duino/source/8856a3ad962b16383ace64d6d977bae34c56af0b:), refer to [Serprog/Arduino flasher](http://www.flashrom.org/Serprog/Arduino_flasher)
 
 ## How To
 
 + Open sketch `due_usbprog`.
-+ Upload it to DUE
++ Upload it to Arduino Pro Mini
 + Use `flashrom` to program flash. [flashrom](http://flashrom)
 
 ## Connections
 
 	Arduino DUE						Flash
-		A5							  CS
+		10							  CS
 	   MOSI						 	 MOSI
 	   MISO                          MISO
 	    SCK 						  SCK
