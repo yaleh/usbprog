@@ -22,11 +22,11 @@ Use `flashrom` tool and `Arduino Pro Mini` to program flash. Based on [serprog-d
 
 ### Write
 
-	flashrom -p serprog:dev=/dev/ttyACM0:2000000 -w w_fw.bin
+	flashrom -p serprog:dev=/dev/ttyACM0:115200 -w w_fw.bin
 
 ### Read
 	
-	flashrom -p serprog:dev=/dev/ttyACM0:2000000 -r r_fw.bin
+	flashrom -p serprog:dev=/dev/ttyACM0:115200 -r r_fw.bin
 
 
 ## Supported Device
