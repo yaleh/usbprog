@@ -28,7 +28,7 @@
 #define S_CMD_Q_CHIPSIZE   0x06UL /* Query supported chipsize (2^n format)        */
 #define S_CMD_Q_OPBUF      0x07UL /* Query operation buffer size                  */
 
-#define S_CMD_Q_WRNMAXLEN  0x08UL /* Query Write to opbuf: Write-N maximum length */
+#define S_CMD_Q_WRNMAXLEN  0x08UL /* Query Write toS opbuf: Write-N maximum length */
 #define S_CMD_R_BYTE       0x09UL /* Read a single byte                           */
 #define S_CMD_R_NBYTES     0x0AUL /* Read n bytes                                 */
 #define S_CMD_O_INIT       0x0BUL /* Initialize operation buffer                  */
@@ -44,7 +44,7 @@
 
 #define S_IFACE_VERSION    0x01    /* Version of the protocol */
 #define S_PGM_NAME    "usbprog" /* The program's name */
-#define S_SPEED      57600    /* Serial speed */
+#define S_SPEED      115200    /* Serial speed */
 
 /* 
  * we must split in 3 parts because else avr-gcc doesn't seem to
@@ -60,7 +60,7 @@
 
 #define SUPPORTED_BUS 0x08
 
-#define CS                A5
+#define CS                10
 
 #define select_chip()      digitalWrite(CS, LOW);
 #define unselect_chip()    digitalWrite(CS, HIGH);
@@ -68,8 +68,8 @@
 
 void setup_spi(void)
 {
-  SPI.begin(52);
-  SPI.setClockDivider(52, 4);
+  SPI.begin();
+  SPI.setClockDivider(SPI_CLOCK_DIV2);
   pinMode(CS, OUTPUT);
   digitalWrite(CS, HIGH);
 }
@@ -79,15 +79,15 @@ inline char readwrite_spi(char c)
   return SPI.transfer(c);
 }
 
-#define putchar_uart(x)  SerialUSB.write(x)
+#define putchar_uart(x)  Serial.write(x)
 
-char getchar_uart(void)
+uint8_t getchar_uart(void)
 {
-  while(!SerialUSB.available());
-  return SerialUSB.read();
+  while(!Serial.available());
+  return Serial.read();
 }
 
-#define word_uart(x)  SerialUSB.print(x)
+#define word_uart(x)  Serial.print(x)
 
 /* get 24bit values in little endian */
 uint32_t get24_le()
@@ -103,7 +103,7 @@ uint32_t get24_le()
 void handle_command(unsigned char command)
 {
   int i;
-  char c;
+  uint8_t c;
   uint32_t slen = 0; /* write len */
   uint32_t rlen = 0; /* read len */
   switch (command){
@@ -192,7 +192,7 @@ void handle_command(unsigned char command)
       }
       putchar_uart(S_ACK);
       /* receive TODO: handle errors */
-      while (rlen--){
+      while (rlen-->0){
         putchar_uart(readwrite_spi(0x0));
       }
       unselect_chip();
@@ -205,15 +205,15 @@ void handle_command(unsigned char command)
 
 void setup(void)
 {
-  SerialUSB.begin(9600);
-  while(!SerialUSB);
+  Serial.begin(S_SPEED);
+//  while(!Serial);
   setup_spi();
 }
 
 void loop(void)
 {
-  uint8_t data=SerialUSB.read();
-  if(data>0){
+  uint8_t data=Serial.read();
+  if(data>=0){
     handle_command(data);
   }
 }
